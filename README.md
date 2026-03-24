@@ -1,2 +1,2 @@
-![light](https://raw.githubusercontent.com/hsungo/hsungo/output/github-contribution-grid-snake.svg)
+![Snake animation](https://github.com/hsungo/hsungo/blob/output/github-snake.svg)
 
