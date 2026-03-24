@@ -2,23 +2,33 @@ name: generate-snake
 
 on:
   schedule:
-    - cron: "* * * * *"
+    - cron: "0 */12 * * *" # 建議不要每分鐘跑一次(* * * * *)，GitHub 可能會限制，改為每12小時跑一次
   workflow_dispatch:
+  push:
+    branches:
+    - main
 
 jobs:
   generate-snake:
+    permissions: 
+      contents: write # 必須賦予寫入權限
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v2
-      - uses: Platane/snk@master
+      - uses: actions/checkout@v3
+
+      - name: generate-snake-game-from-github-contribution-grid
+        uses: Platane/snk@v3
         with:
-          # 你的 GitHub 的名称
-          github_user_name: hsungo
-          # 生成的 .gif 图存储的位置
-          gif_out_path: dist/github-snake.gif
-          # 生成的 .gif 图存储的位置
-          svg_out_path: dist/github-snake.svg
-      - uses: crazy-max/ghaction-github-pages@v2.5.0
+          github_user_name: ${hsungo}
+          outputs: |
+            dist/github-snake.svg
+            dist/github-snake-dark.svg?palette=github-dark
+            dist/ocean.gif?color_snake=orange&color_dots=#bfd6f6,#8dbdff,#64a1f4,#4b91f1,#3c7dd9
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: push github-snake.svg to the output branch
+        uses: crazy-max/ghaction-github-pages@v3.1.0
         with:
           target_branch: output
           build_dir: dist
